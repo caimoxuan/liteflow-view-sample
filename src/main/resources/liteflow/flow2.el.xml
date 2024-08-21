@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow>
+    <chain name="promotionChain">
+        THEN(fullCutCmp, fullDiscountCmp, rushBuyCmp.tag("dog"));
+    </chain>
+
+    <chain name="whenChain">
+        WHEN(fullCutCmp, fullDiscountCmp, rushBuyCmp);
+    </chain>
+
+    <chain name="whenThenChain">
+        WHEN(fullCutCmp, THEN(fullDiscountCmp, rushBuyCmp));
+    </chain>
+
+    <chain name="forChain">
+        FOR(forIntCmp).DO(THEN(fullCutCmp, fullDiscountCmp, rushBuyCmp)).BREAK(breakCmp);
+    </chain>
+
+    <chain name="whileChain">
+        WHILE(boolean1Cmp).DO(THEN(fullCutCmp, fullDiscountCmp, rushBuyCmp));
+    </chain>
+
+    <chain name="whileAndChain">
+        WHILE(AND(boolean1Cmp, boolean2Cmp)).DO(THEN(fullCutCmp, fullDiscountCmp, rushBuyCmp));
+    </chain>
+
+    <chain name="if2Chain">
+        IF(boolean1Cmp, fullCutCmp);
+    </chain>
+
+    <chain name="if3Chain">
+        IF(boolean1Cmp, fullCutCmp, fullDiscountCmp);
+    </chain>
+
+    <chain name="if3ThenChain">
+        IF(boolean1Cmp, THEN(fullCutCmp, fullDiscountCmp), THEN(fullCutCmp, fullDiscountCmp));
+    </chain>
+
+    <chain name="catch">
+        CATCH(THEN(fullCutCmp, fullDiscountCmp));
+    </chain>
+
+    <chain name="catch2">
+        CATCH(THEN(node("fullCutCmp"), fullDiscountCmp));
+    </chain>
+
+    <chain name="catchDo">
+        CATCH(THEN(fullCutCmp, fullDiscountCmp)).DO(stepPrintCmp);
+    </chain>
+
+    <chain name="catchDo(then)">
+        CATCH(THEN(fullCutCmp, fullDiscountCmp)).DO(THEN(fullDiscountCmp, rushBuyCmp));
+    </chain>
+
+
+</flow>

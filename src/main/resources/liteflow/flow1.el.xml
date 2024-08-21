@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE flow PUBLIC  "liteflow" "liteflow.dtd">
+<flow>
+    <nodes>
+        <node id="s_memberDiscountCmp" type="script" language="groovy">
+            <![CDATA[
+            import com.cmx.liteflow.liteflowviewsmaple.bean.PriceStepVO
+            import com.cmx.liteflow.liteflowviewsmaple.enums.PriceTypeEnum
+            import com.cmx.liteflow.liteflowviewsmaple.slot.PriceContext
+
+            import java.math.RoundingMode
+
+            PriceContext context = priceContext;
+            String memberCode = context.getMemberCode();
+
+            /***这里Mock下通过memberCode去查会员等级表然后获取的会员折扣为9折的代码***/
+            BigDecimal memberDiscount = new BigDecimal("0.9");
+
+            //进行计算会员折扣
+            BigDecimal prePrice = context.getLastestPriceStep().getCurrPrice();
+            BigDecimal currPrice = prePrice.multiply(memberDiscount).setScale(2, RoundingMode.HALF_UP);
+
+            //加入到价格步骤中
+            context.addPriceStep(new PriceStepVO(PriceTypeEnum.MEMBER_DISCOUNT,
+                    memberCode,
+                    prePrice,
+                    currPrice.subtract(prePrice),
+                    currPrice,
+                    PriceTypeEnum.MEMBER_DISCOUNT.getName()));
+            ]]>
+        </node>
+
+        <node id="s_couponCmp" type="script" language="groovy">
+            <![CDATA[
+            import com.cmx.liteflow.liteflowviewsmaple.bean.PriceStepVO
+            import com.cmx.liteflow.liteflowviewsmaple.enums.PriceTypeEnum
+            import com.cmx.liteflow.liteflowviewsmaple.slot.PriceContext
+
+            PriceContext context = priceContext;
+
+            /**这里Mock下根据couponId取到的优惠卷面值为15元**/
+            Long couponId = context.getCouponId();
+            BigDecimal couponPrice = new BigDecimal(15);
+
+            BigDecimal prePrice = context.getLastestPriceStep().getCurrPrice();
+            BigDecimal currPrice = prePrice.subtract(couponPrice);
+
+            context.addPriceStep(new PriceStepVO(PriceTypeEnum.COUPON_DISCOUNT,
+                    couponId.toString(),
+                    prePrice,
+                    currPrice.subtract(prePrice),
+                    currPrice,
+                    PriceTypeEnum.COUPON_DISCOUNT.getName()));
+            ]]>
+        </node>
+    </nodes>
+
+
+    <chain name="mainChain">
+        THEN(
+            checkCmp, slotInitCmp, priceStepInitCmp,
+            promotionConvertCmp, s_memberDiscountCmp,
+            promotionChain, s_couponCmp,
+            SWITCH(postageCondCmp).to(postageCmp, overseaPostageCmp),
+            priceResultCmp, stepPrintCmp
+        );
+    </chain>
+
+    <chain name="thenSwitchChain">
+        THEN(
+        checkCmp, slotInitCmp, priceStepInitCmp,
+        promotionConvertCmp, s_memberDiscountCmp,
+        promotionChain, s_couponCmp,
+        SWITCH(postageCondCmp).to(postageCmp, THEN(postageCmp, overseaPostageCmp)),
+        priceResultCmp, stepPrintCmp
+        );
+    </chain>
+
+    <chain name="switchChain">
+        SWITCH(postageCondCmp).to(postageCmp, overseaPostageCmp);
+    </chain>
+</flow>
