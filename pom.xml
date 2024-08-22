@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <liteflow-view.version>2.11.4.s3.04</liteflow-view.version>
+        <liteflow-view.version>2.11.4.s3.05</liteflow-view.version>
         <!-- liteflow script groovy -->
         <liteflow_script_groovy_version>2.11.4.2</liteflow_script_groovy_version>
     </properties>
@@ -36,12 +36,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
@@ -51,11 +45,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

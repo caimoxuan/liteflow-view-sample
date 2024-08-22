@@ -27,6 +27,8 @@ public class LocalFileMapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 如果是从 一个语言换成另一个语言，由于是文件模式 需要自己实现删除原文件逻辑，否则会有2个文件，找的时候只会找第一个
+
         // 清除当前内存缓存，分布式场景下需要异步通知所有机器清除当前缓存， 不开启缓存对java脚本性能影响较大
         Extensions.clearExtensionCache(loadKey, extCode);
     }
